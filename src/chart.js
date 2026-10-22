@@ -27,11 +27,11 @@ export function downloadResultImage(result) {
   canvas.height = 1550;
   const context = canvas.getContext('2d');
   if (!context) throw new Error('Your browser cannot create a result image. Please use the print option.');
-  context.fillStyle = '#f7f7f0';
+  context.fillStyle = '#f4f1e8';
   context.fillRect(0, 0, 1200, 1550);
-  context.fillStyle = '#f5cd47';
+  context.fillStyle = '#f3cb46';
   context.fillRect(0, 0, 1200, 195);
-  context.fillStyle = '#203b30';
+  context.fillStyle = '#2d2615';
   context.font = 'bold 52px Arial';
   context.fillText('12 AXES', 65, 88);
   context.font = '26px Arial';
@@ -41,7 +41,7 @@ export function downloadResultImage(result) {
   axes.forEach((axis, index) => {
     const y = 310 + index * 90;
     const score = result.scores[index];
-    context.fillStyle = '#203b30';
+    context.fillStyle = '#2d2615';
     context.font = 'bold 23px Arial';
     context.fillText(`${String(index + 1).padStart(2, '0')}  ${axis.name}`, 65, y);
     context.font = '19px Arial';
@@ -49,12 +49,12 @@ export function downloadResultImage(result) {
     context.textAlign = 'right';
     context.fillText(`${100 - score}% ${axis.right}`, 1135, y + 31);
     context.textAlign = 'left';
-    context.fillStyle = '#dfe4dc';
+    context.fillStyle = '#e4dcc7';
     context.fillRect(65, y + 43, 1070, 11);
-    context.fillStyle = '#49745c';
+    context.fillStyle = '#ae810e';
     context.fillRect(65, y + 43, 1070 * score / 100, 11);
   });
-  context.fillStyle = '#66736a';
+  context.fillStyle = '#706954';
   context.font = '20px Arial';
   context.fillText('A snapshot of your answers, not a scientific assessment or a political identity.', 65, 1440);
   context.fillText('12axes.lashreel.com · Results stay in your browser unless you share them.', 65, 1480);

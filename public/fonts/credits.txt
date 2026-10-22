@@ -1,0 +1,15 @@
+Self-hosted fonts, downloaded from the official Google Fonts service on 22 October 2026.
+Only the latin WOFF2 subsets are included.
+
+Poppins — regular 400, medium 500, semibold 600
+https://fonts.google.com/specimen/Poppins
+Official project license: Poppins-OFL.txt
+https://github.com/google/fonts/tree/main/ofl/poppins
+
+Sora — semibold 600
+https://fonts.google.com/specimen/Sora
+Official project license: Sora-OFL.txt
+https://github.com/google/fonts/tree/main/ofl/sora
+
+Both fonts are distributed under the SIL Open Font License, Version 1.1.
+The fonts are served locally; visiting this website makes no request to Google Fonts.

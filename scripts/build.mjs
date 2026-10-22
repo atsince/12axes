@@ -1,4 +1,5 @@
-import { mkdir, rm, cp, writeFile, readdir } from 'node:fs/promises';
+import { mkdir, rm, cp, writeFile, readdir, readFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
@@ -22,6 +23,10 @@ for (const question of questions) {
   if (!axes.some(axis => axis.id === question.axis) || !question.text?.trim()) throw new Error(`Invalid statement ${question.id}: axis=${question.axis}, text=${question.text}`);
 }
 
+const assetHash = createHash('sha256');
+for (const filename of (await readdir('src')).sort()) assetHash.update(await readFile(join('src', filename)));
+const assetsDirectory = `assets/${assetHash.digest('hex').slice(0, 12)}`;
+
 const escapeAttribute = value => value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 function documentHtml(path) {
   const [title, description] = routeMetadata[path] || ['Page Not Found — 12 Axes', 'Find your way back to the 12 Axes political test.'];
@@ -34,12 +39,13 @@ function documentHtml(path) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escapeAttribute(title)}</title>
 <meta name="description" content="${escapeAttribute(description)}">
-<meta name="theme-color" content="#f5cd47">
+<meta name="theme-color" content="#f3cb46">
 <meta name="color-scheme" content="light">
 <meta name="robots" content="${noIndex ? 'noindex, follow' : 'index, follow'}">
 <link rel="canonical" href="${canonical}">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="stylesheet" href="/assets/styles.css">
+<link rel="stylesheet" href="/${assetsDirectory}/styles.css">
+<link rel="stylesheet" href="/${assetsDirectory}/quiz.css">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="12 Axes">
 <meta property="og:locale" content="en_US">
@@ -48,7 +54,7 @@ function documentHtml(path) {
 <meta property="og:url" content="${canonical}">
 <meta name="twitter:card" content="summary">
 ${path === '/' ? '<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"12 Axes Political Test","url":"https://12axes.lashreel.com/","applicationCategory":"EducationalApplication","operatingSystem":"Any","browserRequirements":"JavaScript enabled for the questionnaire","isAccessibleForFree":true,"inLanguage":"en","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>' : ''}
-<script type="module" src="/assets/app.js"></script>
+<script type="module" src="/${assetsDirectory}/app.js"></script>
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -64,9 +70,9 @@ ${path === '/' ? '<script type="application/ld+json">{"@context":"https://schema
 }
 
 await rm('dist', { recursive: true, force: true });
-await mkdir('dist/assets', { recursive: true });
+await mkdir(join('dist', assetsDirectory), { recursive: true });
 await cp('public', 'dist', { recursive: true });
-await cp('src', 'dist/assets', { recursive: true });
+await cp('src', join('dist', assetsDirectory), { recursive: true });
 for (const path of Object.keys(routeMetadata)) {
   const folder = path === '/' ? 'dist' : join('dist', path);
   await mkdir(folder, { recursive: true });

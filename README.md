@@ -38,7 +38,10 @@ npm run build
 - `src/app.js`：答题状态、路由、存储、分享和页面行为。
 - `src/views.js`：页面文案、静态内容和SEO元信息。
 - `src/chart.js`：SVG 雷达图和 PNG 导出。
-- `src/styles.css`：响应式黄色视觉样式。
+- `src/styles.css`：参考站布局与响应式黄色视觉样式。
+- `src/quiz.css`：答题卡片、分段进度与自动前进控件。
+- `public/fonts/`：自托管 Sora 与 Poppins 字体及 SIL OFL 授权。
+- `public/portraits/`：公共领域肖像和出处说明，仅作示例卡插图。
 - `scripts/build.mjs`：语法编译检查和静态页面生成。
 - `research.md`：Google 前十结果调研、参考网站拆解、实现建议。
 
@@ -59,4 +62,4 @@ Cloudflare Pages 项目 `12axes-lashreel` 已连接 `atsince/12axes` 的 `main` 
 
 这是独立原创教育问卷，未经独立科学验证。与其他名为12axes的网站没有关联，得分不可直接互换。
 
-MIT License；不包含其他测试网站保留版权的题库、资料或人物向量。
+原创代码与题库使用 MIT License；字体遵循各自的 SIL OFL，公共领域肖像来源见对应 credits.txt。不包含其他测试网站保留版权的题库、资料或人物向量。

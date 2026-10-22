@@ -1,0 +1,43 @@
+Portrait image credits
+Retrieved: 22 October 2026
+
+These portraits illustrate historical political thought. They do not represent
+measured personal profiles, endorsements, or a user's actual match.
+No source website's questionnaire, result vectors, or proprietary artwork is included.
+
+1. mill.jpg — John Stuart Mill, circa 1870
+Creator: London Stereoscopic Company
+Source collection: Hulton Archive
+Source and public-domain statement:
+https://commons.wikimedia.org/wiki/File:John_Stuart_Mill_by_London_Stereoscopic_Company,_c1870.jpg
+Downloaded Wikimedia-generated 500-pixel JPEG:
+https://thumb.wikimedia.org/wikipedia/commons/thumb/9/99/John_Stuart_Mill_by_London_Stereoscopic_Company%2C_c1870.jpg/500px-John_Stuart_Mill_by_London_Stereoscopic_Company%2C_c1870.jpg
+License/status: Public Domain Mark 1.0; Commons identifies the work as public domain
+under the author's-life-plus-70-years rule. The photograph dates to circa 1870.
+https://creativecommons.org/publicdomain/mark/1.0/
+
+2. wollstonecraft.jpg — Portrait of Mary Wollstonecraft, circa 1790–1791
+Artist: John Opie (1761–1807)
+Source collection: Tate Britain
+Source and public-domain statement:
+https://commons.wikimedia.org/wiki/File:MaryWollstonecraft.jpg
+Downloaded Wikimedia-generated 500-pixel JPEG:
+https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bc/MaryWollstonecraft.jpg/500px-MaryWollstonecraft.jpg
+License/status: Public Domain Mark 1.0; Commons identifies this as a faithful
+reproduction of a public-domain two-dimensional painting. The artist died in 1807;
+the painting predates 1931 and is out of copyright under life-plus-100-years terms.
+https://creativecommons.org/publicdomain/mark/1.0/
+
+3. smith.jpg — The Muir portrait, traditionally identified as Adam Smith, circa 1800
+Artist: Unknown
+Source collection: Scottish National Gallery / National Galleries of Scotland, PG 1472
+Source and public-domain statement:
+https://commons.wikimedia.org/wiki/File:Adam_Smith_The_Muir_portrait.jpg
+https://www.nationalgalleries.org/art-and-artists/3787/adam-smith-1723-1790-political-economist
+Downloaded Wikimedia-generated 500-pixel JPEG:
+https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Adam_Smith_The_Muir_portrait.jpg/500px-Adam_Smith_The_Muir_portrait.jpg
+License/status: Public Domain Mark 1.0; Commons identifies this as a faithful
+reproduction of a public-domain two-dimensional painting, out of copyright under
+life-plus-100-years terms and published before 1931. The identification of the sitter
+is traditionally accepted but not definitively proven; it is known as the Muir portrait.
+https://creativecommons.org/publicdomain/mark/1.0/

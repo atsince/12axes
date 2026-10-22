@@ -10,6 +10,9 @@ const responseLabels = ['Strongly agree', 'Agree', 'Neutral / unsure', 'Disagree
 const responseValues = [2, 1, 0, -1, -2];
 let storageWarningShown = false;
 let toastTimer;
+let answerAdvanceTimer;
+let advanceOnAnswer = true;
+let previewIndex = 0;
 
 function notify(message, kind = 'info') {
   const notice = document.getElementById('notice');
@@ -72,6 +75,14 @@ function navigate(path) {
   render();
 }
 
+function quizProgressSegments(selectedQuestions, answers, currentAxisId) {
+  return axes.map(axis => {
+    const positions = selectedQuestions.map((question, index) => question.axis === axis.id ? index : -1).filter(index => index !== -1);
+    const answered = positions.filter(index => answers[index] !== null).length;
+    return `<span class="progress-segment ${axis.id === currentAxisId ? 'is-current' : ''}" title="${axis.name}: ${answered} of ${positions.length} answered"><span style="width:${answered / positions.length * 100}%"></span></span>`;
+  }).join('');
+}
+
 function quizPage() {
   if (!session) return `<section class="container empty-state"><span class="eyebrow">A fresh perspective</span><h1>Choose your starting point.</h1><p>Select a test length to begin your questionnaire.</p><a href="/political-test" class="button">Choose your test ${arrow}</a></section>`;
   const selectedQuestions = questionsForMode(session.mode);
@@ -79,7 +90,8 @@ function quizPage() {
   const axis = axes.find(item => item.id === question.axis);
   const answeredCount = session.answers.filter(answer => answer !== null).length;
   const selected = session.answers[session.index];
-  return `<section class="quiz-shell container"><div class="quiz-topline"><a href="/political-test" class="back-link">← Save & exit</a><span>${session.mode === 'quick' ? 'Quick' : 'Full'} perspective <span class="middot">·</span> ${storageWarningShown ? 'This tab only' : 'Saved on this device'}</span></div><div class="quiz-progress-label"><strong>Question ${session.index + 1} <span>of ${selectedQuestions.length}</span></strong><span>${answeredCount} answered</span></div><div class="progress-track" role="progressbar" aria-valuenow="${answeredCount}" aria-valuemin="0" aria-valuemax="${selectedQuestions.length}" aria-label="Statements answered"><span style="width:${answeredCount / selectedQuestions.length * 100}%"></span></div><div class="question-panel"><span class="eyebrow question-category">${String(axes.indexOf(axis) + 1).padStart(2, '0')} / ${axis.name}</span><h1>${question.text}</h1><p class="question-prompt">How much do you agree with this statement?</p><div class="answer-options" role="group" aria-label="Your response">${responseLabels.map((label, index) => `<button type="button" class="answer-option answer-${index} ${selected === responseValues[index] ? 'selected' : ''}" data-action="answer" data-value="${responseValues[index]}" aria-pressed="${selected === responseValues[index]}"><span class="answer-radio" aria-hidden="true"></span><span>${label}</span><kbd>${index + 1}</kbd></button>`).join('')}</div><div class="quiz-navigation"><button class="text-button back-question" data-action="previous" ${session.index === 0 ? 'disabled' : ''}>← Previous</button><button class="button" data-action="next" ${selected === null ? 'disabled' : ''}>${session.index === selectedQuestions.length - 1 ? 'See my results' : 'Continue'} <span aria-hidden="true">→</span></button></div><p class="keyboard-note">Keyboard: <kbd>1</kbd>–<kbd>5</kbd> to choose <span>·</span> <kbd>→</kbd> to continue</p></div><p class="quiz-reassurance">There’s no right answer. Neutral is a valid response, too.</p></section>`;
+  const questionNumber = String(session.index + 1).padStart(2, '0');
+  return `<section class="quiz-shell container"><div class="quiz-progress-label"><span>Question <strong>${session.index + 1} of ${selectedQuestions.length}</strong></span><span class="quiz-complete">${Math.round(answeredCount / selectedQuestions.length * 100)}% complete</span></div><div class="progress-track" role="progressbar" aria-valuenow="${answeredCount}" aria-valuemin="0" aria-valuemax="${selectedQuestions.length}" aria-label="Statements answered across twelve axes">${quizProgressSegments(selectedQuestions, session.answers, axis.id)}</div><article class="question-panel" aria-labelledby="question-title"><span class="question-watermark" aria-hidden="true">${questionNumber}</span><div class="question-topic"><span class="question-category"><span class="question-topic-icon" aria-hidden="true">${String(axes.indexOf(axis) + 1).padStart(2, '0')}</span>${axis.name}</span><a href="/axes#${axis.id}" class="question-info" aria-label="Understand the ${axis.name.toLowerCase()} axis">?</a></div><h1 id="question-title">${question.text}</h1><div class="answer-options" role="group" aria-label="How much do you agree with this statement?">${responseLabels.map((label, index) => `<button type="button" class="answer-option answer-${index} ${selected === responseValues[index] ? 'selected' : ''}" data-action="answer" data-value="${responseValues[index]}" aria-pressed="${selected === responseValues[index]}"><span class="answer-symbol" aria-hidden="true">${index < 2 ? '✓' : index === 2 ? '−' : '×'}</span><span>${label}</span><span class="answer-radio" aria-hidden="true"></span></button>`).join('')}</div></article><nav class="quiz-navigation" aria-label="Quiz navigation"><button class="quiz-back" data-action="previous" ${session.index === 0 ? 'disabled' : ''}><span aria-hidden="true">←</span> Back</button><button type="button" class="advance-toggle" role="switch" aria-checked="${advanceOnAnswer}" data-action="toggle-advance"><span class="advance-track" aria-hidden="true"><span></span></span>Advance on answer</button><button class="quiz-next" data-action="next" ${selected === null ? 'disabled' : ''}>${session.index === selectedQuestions.length - 1 ? 'See results' : 'Next'} <span aria-hidden="true">→</span></button></nav><div class="quiz-caption"><a href="/political-test">${storageWarningShown ? 'Progress stays in this tab' : 'Progress saved on this device'} · Save & exit</a><p class="keyboard-note">Keyboard: <kbd>1</kbd>–<kbd>5</kbd> to choose <span>·</span> <kbd>→</kbd> to continue</p></div></section>`;
 }
 
 function activeResult() {
@@ -107,11 +119,14 @@ function resultsPage() {
 }
 
 function render({ initial = false } = {}) {
+  clearTimeout(answerAdvanceTimer);
   const path = pathName();
   document.getElementById('site-header').innerHTML = header(path);
+  syncThemeButtons();
   document.getElementById('site-footer').innerHTML = footer();
   main.innerHTML = path === '/test' ? quizPage() : path === '/results' ? resultsPage() : staticPage(path);
   document.body.classList.toggle('quiz-active', path === '/test');
+  if (path === '/') showPreviewProfile(previewIndex);
   const metadata = routeMetadata[path];
   document.title = metadata ? metadata[0] : 'Page Not Found — 12 Axes';
   if (metadata) document.querySelector('meta[name="description"]').setAttribute('content', metadata[1]);
@@ -129,8 +144,29 @@ function render({ initial = false } = {}) {
   }
 }
 
+
+function showPreviewProfile(index) {
+  const cards = [...document.querySelectorAll('[data-preview-card]')];
+  if (!cards.length) return;
+  if (!Number.isInteger(index) || index < 0 || index >= cards.length) throw new Error(`Unknown example profile index: ${index}`);
+  previewIndex = index;
+  cards.forEach((card, cardIndex) => {
+    const position = (cardIndex - index + cards.length) % cards.length;
+    card.classList.toggle('is-current', position === 0);
+    card.classList.toggle('is-after', position === 1);
+    card.classList.toggle('is-before', position > 1);
+    card.setAttribute('aria-hidden', String(position !== 0));
+  });
+  document.querySelectorAll('[data-action="preview-profile"]').forEach(button => {
+    const active = Number(button.dataset.index) === index;
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+}
+
 function selectAnswer(value) {
   if (!session || !Number.isInteger(value) || value < -2 || value > 2) throw new Error(`Invalid answer value: ${value}`);
+  clearTimeout(answerAdvanceTimer);
   session.answers[session.index] = value;
   saveStored(sessionKey, session);
   const options = document.querySelectorAll('[data-action="answer"]');
@@ -141,12 +177,21 @@ function selectAnswer(value) {
   });
   document.querySelector('[data-action="next"]').disabled = false;
   const answeredCount = session.answers.filter(answer => answer !== null).length;
-  document.querySelector('.quiz-progress-label > span').textContent = `${answeredCount} answered`;
+  const selectedQuestions = questionsForMode(session.mode);
+  document.querySelector('.quiz-complete').textContent = `${Math.round(answeredCount / session.answers.length * 100)}% complete`;
   document.querySelector('.progress-track').setAttribute('aria-valuenow', String(answeredCount));
-  document.querySelector('.progress-track > span').style.width = `${answeredCount / session.answers.length * 100}%`;
+  document.querySelector('.progress-track').innerHTML = quizProgressSegments(selectedQuestions, session.answers, selectedQuestions[session.index].axis);
+  if (advanceOnAnswer) {
+    const answeredSession = session;
+    const answeredIndex = session.index;
+    answerAdvanceTimer = setTimeout(() => {
+      if (pathName() === '/test' && session === answeredSession && session.index === answeredIndex && !document.querySelector('dialog[open]')) nextQuestion();
+    }, 220);
+  }
 }
 
 function nextQuestion() {
+  clearTimeout(answerAdvanceTimer);
   if (!session || session.answers[session.index] === null) return;
   if (session.index < session.answers.length - 1) {
     session.index += 1;
@@ -170,6 +215,7 @@ function nextQuestion() {
 }
 
 function previousQuestion() {
+  clearTimeout(answerAdvanceTimer);
   if (!session || session.index === 0) return;
   session.index -= 1;
   saveStored(sessionKey, session);
@@ -177,8 +223,17 @@ function previousQuestion() {
 }
 
 function showClearDialog() {
+  clearTimeout(answerAdvanceTimer);
   const dialog = document.getElementById('clear-dialog');
   if (!dialog.open) dialog.showModal();
+}
+
+function syncThemeButtons() {
+  const dark = document.documentElement.dataset.theme === 'dark';
+  document.querySelectorAll('[data-action="toggle-theme"]').forEach(button => {
+    button.setAttribute('aria-label', `Switch to ${dark ? 'light' : 'dark'} mode`);
+    button.setAttribute('aria-pressed', String(dark));
+  });
 }
 
 async function copyResultLink() {
@@ -216,6 +271,22 @@ document.addEventListener('click', event => {
       navigate('/test');
     }
     if (action === 'resume') navigate('/test');
+    if (action === 'preview-profile') showPreviewProfile(Number(actionButton.dataset.index));
+    if (action === 'toggle-menu') {
+      const expanded = actionButton.getAttribute('aria-expanded') !== 'true';
+      actionButton.setAttribute('aria-expanded', String(expanded));
+      actionButton.setAttribute('aria-label', expanded ? 'Close navigation' : 'Open navigation');
+      document.getElementById('main-navigation').classList.toggle('is-open', expanded);
+    }
+    if (action === 'toggle-advance') {
+      clearTimeout(answerAdvanceTimer);
+      advanceOnAnswer = !advanceOnAnswer;
+      actionButton.setAttribute('aria-checked', String(advanceOnAnswer));
+    }
+    if (action === 'toggle-theme') {
+      document.documentElement.dataset.theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      syncThemeButtons();
+    }
     if (action === 'answer') selectAnswer(Number(actionButton.dataset.value));
     if (action === 'next') nextQuestion();
     if (action === 'previous') previousQuestion();
@@ -257,6 +328,11 @@ document.addEventListener('keydown', event => {
   if (event.key === 'ArrowRight') { event.preventDefault(); nextQuestion(); }
   if (event.key === 'ArrowLeft') { event.preventDefault(); previousQuestion(); }
 });
+setInterval(() => {
+  const gallery = document.querySelector('.hero-gallery');
+  if (!gallery || document.hidden || window.matchMedia('(prefers-reduced-motion: reduce)').matches || gallery.matches(':hover, :focus-within')) return;
+  showPreviewProfile((previewIndex + 1) % gallery.querySelectorAll('[data-preview-card]').length);
+}, 6000);
 window.addEventListener('popstate', () => render());
 window.addEventListener('hashchange', () => render());
 render({ initial: true });

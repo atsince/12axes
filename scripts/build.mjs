@@ -41,6 +41,7 @@ function documentHtml(path) {
 <meta name="description" content="${escapeAttribute(description)}">
 <meta name="theme-color" content="#f3cb46">
 <meta name="color-scheme" content="light">
+<meta name="google-site-verification" content="VG1hmNQWj6TiBfz7E6BG6Z_HTyqrpU2G-FPcc7vFj1o">
 <meta name="robots" content="${noIndex ? 'noindex, follow' : 'index, follow'}">
 <link rel="canonical" href="${canonical}">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -53,7 +54,7 @@ function documentHtml(path) {
 <meta property="og:description" content="${escapeAttribute(description)}">
 <meta property="og:url" content="${canonical}">
 <meta name="twitter:card" content="summary">
-${path === '/' ? '<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"12 Axes Political Test","url":"https://12axes.lashreel.com/","applicationCategory":"EducationalApplication","operatingSystem":"Any","browserRequirements":"JavaScript enabled for the questionnaire","isAccessibleForFree":true,"inLanguage":"en","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>' : ''}
+${path === '/' ? '<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"12 Axes Political Test","url":"https://12axespoliticaltest.online/","applicationCategory":"EducationalApplication","operatingSystem":"Any","browserRequirements":"JavaScript enabled for the questionnaire","isAccessibleForFree":true,"inLanguage":"en","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>' : ''}
 <script type="module" src="/${assetsDirectory}/app.js"></script>
 </head>
 <body>

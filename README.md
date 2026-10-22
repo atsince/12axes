@@ -2,7 +2,7 @@
 
 英文政治价值观自测网站，黄色主视觉，原创 72 题，浏览器本地计分，无需登录、无广告或分析脚本。
 
-线上地址：https://12axes.lashreel.com
+线上地址：https://12axespoliticaltest.online
 
 ## 本地运行
 
@@ -51,8 +51,9 @@ Cloudflare Pages 项目 `12axes-lashreel` 已连接 `atsince/12axes` 的 `main` 
 
 - Build command: `npm run build`
 - Output directory: `dist`
-- Custom domain: `12axes.lashreel.com`
-- DNS: `12axes` CNAME → `12axes-lashreel.pages.dev`（DNS only）
+- Custom domain: `12axespoliticaltest.online`
+- DNS: 根域 `@` CNAME → `12axes-lashreel.pages.dev`（由 Pages 自定义域名流程配置）
+- Pages `_redirects` 仅保留路径重定向；按域名匹配的跳转应在 Cloudflare Redirect Rules 配置。
 
 仓库不包含 Cloudflare 或 GitHub 凭据。
 

@@ -57,7 +57,7 @@ export function downloadResultImage(result) {
   context.fillStyle = '#706954';
   context.font = '20px Arial';
   context.fillText('A snapshot of your answers, not a scientific assessment or a political identity.', 65, 1440);
-  context.fillText('12axes.lashreel.com · Results stay in your browser unless you share them.', 65, 1480);
+  context.fillText('12axespoliticaltest.online · Results stay in your browser unless you share them.', 65, 1480);
   const link = document.createElement('a');
   link.download = '12axes-my-political-profile.png';
   link.href = canvas.toDataURL('image/png');

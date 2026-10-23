@@ -54,7 +54,7 @@ function documentHtml(path) {
 <meta property="og:description" content="${escapeAttribute(description)}">
 <meta property="og:url" content="${canonical}">
 <meta name="twitter:card" content="summary">
-${path === '/' ? '<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"12 Axes Political Test","url":"https://12axespoliticaltest.online/","applicationCategory":"EducationalApplication","operatingSystem":"Any","browserRequirements":"JavaScript enabled for the questionnaire","isAccessibleForFree":true,"inLanguage":"en","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>' : ''}
+${path === '/' ? `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebApplication', name: '12 Axes Political Test', description, url: `${siteOrigin}/`, applicationCategory: 'EducationalApplication', operatingSystem: 'Any', browserRequirements: 'JavaScript enabled for the questionnaire', isAccessibleForFree: true, inLanguage: 'en', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } })}</script>` : ''}
 <script type="module" src="/${assetsDirectory}/app.js"></script>
 </head>
 <body>

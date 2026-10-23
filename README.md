@@ -1,6 +1,6 @@
 # 12 Axes
 
-英文政治价值观自测网站，黄色主视觉，原创 72 题，浏览器本地计分，无需登录、无广告或分析脚本。
+英文政治价值观自测网站，黄色主视觉，原创 72 题，浏览器本地计分，无需登录、无广告，提供访客同意后启用的 Google Analytics 和 Microsoft Clarity。
 
 线上地址：https://12axespoliticaltest.online
 
@@ -40,6 +40,8 @@ npm run build
 - `src/chart.js`：SVG 雷达图和 PNG 导出。
 - `src/styles.css`：参考站布局与响应式黄色视觉样式。
 - `src/quiz.css`：答题卡片、分段进度与自动前进控件。
+- `src/analytics.js`：GA4 页面浏览统计、Clarity 公共页面录制及统计偏好。
+- `src/analytics.css`：统计偏好面板样式。
 - `public/fonts/`：自托管 Sora 与 Poppins 字体及 SIL OFL 授权。
 - `public/portraits/`：公共领域肖像和出处说明，仅作示例卡插图。
 - `scripts/build.mjs`：语法编译检查和静态页面生成。
@@ -56,6 +58,17 @@ Cloudflare Pages 项目 `12axes-lashreel` 已连接 `atsince/12axes` 的 `main` 
 - Pages `_redirects` 仅保留路径重定向；按域名匹配的跳转应在 Cloudflare Redirect Rules 配置。
 
 仓库不包含 Cloudflare 或 GitHub 凭据。
+
+## 访问统计
+
+- GA4 衡量 ID：`G-7PPSG0RGJ2`，媒体资源 `560470776`，后台：https://analytics.google.com/analytics/web/#/a350593005p560470776/reports/intelligenthome
+- Clarity 项目：`z24zihjej1`，后台：https://clarity.microsoft.com/projects/view/z24zihjej1/gettingstarted
+- 仅在 `12axespoliticaltest.online` 和 `www.12axespoliticaltest.online` 加载统计；本地和 Pages 预览域名不采集。
+- 访客选择 Allow analytics 后才加载脚本，页脚 Analytics preferences 可以撤回。选择保存在 `12axes.analytics-consent.v1`；清理答题数据不会改变统计选择。
+- GA4 手动记录页面浏览；切换题目和重复渲染不增加页面浏览数。GA 后台的增强型衡量已关闭，避免自动采集表单、出站链接和重复页面浏览。不要开启广告或 Google Signals。
+- Clarity 不加载于 `/test`、`/results`，也不在带查询参数或结果片段的初始页面加载。公共页面与答题/结果页面之间使用整页导航隔离录制脚本。
+- 不设置用户身份，不发送答案和得分；GA 页面地址只保留已知路由，去除查询参数和 fragment，外部来源只保留 origin。
+- 统计 ID 是公开客户端标识，配置随代码构建，不需要服务器密钥。
 
 ## 计分与限制
 

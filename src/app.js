@@ -2,6 +2,7 @@ import { axes } from './content.js';
 import { questionsForMode, calculateScores, readSharedResult, sharedResultUrl } from './scoring.js';
 import { radarChart, downloadResultImage } from './chart.js';
 import { header, footer, staticPage, routeMetadata, arrow, emptyResultsPage, siteOrigin } from './views.js';
+import { initializeAnalytics, trackPageView, showAnalyticsPreferences, isPrivatePage } from './analytics.js';
 
 const sessionKey = '12axes.session.v1';
 const resultKey = '12axes.result.v1';
@@ -71,6 +72,10 @@ function pathName() {
 }
 
 function navigate(path) {
+  if ((window.clarity || !storageWarningShown) && isPrivatePage(pathName()) !== isPrivatePage(new URL(path, location.href).pathname)) {
+    location.assign(path);
+    return;
+  }
   history.pushState({}, '', path);
   render();
 }
@@ -132,6 +137,7 @@ function render({ initial = false } = {}) {
   if (metadata) document.querySelector('meta[name="description"]').setAttribute('content', metadata[1]);
   document.querySelector('meta[name="robots"]').setAttribute('content', ['/test', '/results'].includes(path) || !metadata ? 'noindex, follow' : 'index, follow');
   document.querySelector('link[rel="canonical"]').setAttribute('href', `${siteOrigin}${path === '/' ? '/' : path}`);
+  trackPageView(path);
   if (path === '/political-test' && session) {
     const answeredCount = session.answers.filter(answer => answer !== null).length;
     document.getElementById('resume-slot').innerHTML = `<div class="resume-banner"><div><strong>A little perspective, in progress.</strong><p>${answeredCount} of ${session.answers.length} statements answered in your ${session.mode} test. Starting a new test replaces this progress.</p></div><button class="button button-small" data-action="resume">Resume test →</button></div>`;
@@ -297,6 +303,7 @@ document.addEventListener('click', event => {
     }
     if (action === 'print') window.print();
     if (action === 'clear-data') showClearDialog();
+    if (action === 'analytics-settings') showAnalyticsPreferences();
     if (action === 'confirm-clear') {
       removeStored(sessionKey);
       removeStored(resultKey);
@@ -336,3 +343,4 @@ setInterval(() => {
 window.addEventListener('popstate', () => render());
 window.addEventListener('hashchange', () => render());
 render({ initial: true });
+initializeAnalytics();

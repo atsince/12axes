@@ -47,6 +47,7 @@ function documentHtml(path) {
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="stylesheet" href="/${assetsDirectory}/styles.css">
 <link rel="stylesheet" href="/${assetsDirectory}/quiz.css">
+<link rel="stylesheet" href="/${assetsDirectory}/analytics.css">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="12 Axes">
 <meta property="og:locale" content="en_US">
@@ -62,6 +63,7 @@ ${path === '/' ? `<script type="application/ld+json">${JSON.stringify({ '@contex
 <div id="site-header">${header(path)}</div>
 <main id="main" tabindex="-1">${staticPage(path)}</main>
 <div id="site-footer">${footer()}</div>
+<dialog id="analytics-dialog" aria-labelledby="analytics-title"><h2 id="analytics-title">Help improve 12 Axes?</h2><p>Allow Google Analytics to measure visits and Microsoft Clarity to record interactions on public pages. Your answers and personal results are excluded from recordings. Analytics cookies are optional; the test works either way.</p><p><a href="/privacy">Privacy policy</a> · <a href="/cookies">Cookies & storage</a></p><p id="analytics-storage-error" role="alert" hidden></p><div class="dialog-actions"><button class="button button-outline" data-analytics-consent="denied">Reject analytics</button><button class="button" data-analytics-consent="granted">Allow analytics</button><button class="text-button" data-action="close-dialog">Decide later</button></div></dialog>
 <div id="notice" class="notice" role="status" aria-live="polite" aria-atomic="true"></div>
 <dialog id="clear-dialog" aria-labelledby="clear-dialog-title"><h2 id="clear-dialog-title">Clear your local perspective?</h2><p>This removes saved answers, test progress, and your latest result from this browser. Shared links, downloaded files, and copies on other devices remain available.</p><div class="dialog-actions"><button class="button button-outline" data-action="close-dialog">Keep my data</button><button class="button" data-action="confirm-clear">Clear local data</button></div></dialog>
 <dialog id="share-dialog" aria-labelledby="share-dialog-title"><h2 id="share-dialog-title">Your result link</h2><p>Copy this link manually. Anyone with it can view all twelve scores. Individual answers are not included. The link cannot be revoked.</p><label for="share-link" class="eyebrow">Result URL</label><input id="share-link" class="share-input" type="text" readonly><div class="dialog-actions"><button class="button" data-action="close-dialog">Done</button></div></dialog>

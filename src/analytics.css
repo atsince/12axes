@@ -1,0 +1,4 @@
+#analytics-dialog{position:fixed;inset:auto 20px 20px auto;margin:0;width:min(460px,calc(100% - 40px));max-height:calc(100dvh - 40px);overflow:auto;z-index:100;box-shadow:0 12px 48px #0003}
+#analytics-dialog .dialog-actions{flex-wrap:wrap}
+#analytics-dialog .dialog-actions .button{flex:1;white-space:nowrap}
+#analytics-storage-error{color:#a32121}

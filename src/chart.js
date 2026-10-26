@@ -1,5 +1,6 @@
 import { axes } from './content.js';
 import { axes as portugueseAxes } from './content-pt.js';
+import { questionCountForMode } from './scoring.js';
 
 const chartLabels = ['ECONOMY', 'AUTHORITY', 'GOVERNANCE', 'COOPERATION', 'USE OF FORCE', 'BORDERS', 'CULTURE', 'RELIGION', 'ENVIRONMENT', 'JUSTICE', 'STRUCTURE', 'TECHNOLOGY'];
 const portugueseChartLabels = ['ECONOMIA', 'AUTORIDADE', 'DECISÕES', 'COOPERAÇÃO', 'FORÇA', 'FRONTEIRAS', 'CULTURA', 'RELIGIÃO', 'AMBIENTE', 'JUSTIÇA', 'ESTRUTURA', 'TECNOLOGIA'];
@@ -26,6 +27,7 @@ export function radarChart(scores, { demo = false, locale = 'en' } = {}) {
 }
 
 export function downloadResultImage(result, locale = 'en') {
+  const questionCount = questionCountForMode(result.mode, result.version);
   const portuguese = locale === 'pt-BR';
   const localizedAxes = portuguese ? portugueseAxes : axes;
   const canvas = document.createElement('canvas');
@@ -43,7 +45,8 @@ export function downloadResultImage(result, locale = 'en') {
   context.font = '26px Arial';
   context.fillText(portuguese ? 'Suas ideias políticas em perspectiva.' : 'Your politics, in perspective.', 65, 140);
   context.font = '20px Arial';
-  context.fillText(`${result.mode === 'quick' ? '36' : '72'} ${portuguese ? 'afirmações · Questionário original v1 · Reflexão educativa' : 'statements · Original questionnaire v1 · Educational self-reflection'}`, 65, 250);
+  context.fillText(`${questionCount} ${portuguese ? `afirmações · Questionário original v${result.version} · Reflexão educativa` : `statements · Original questionnaire v${result.version} · Educational self-reflection`}`, 65, 250, 1070);
+  if (result.shared) context.fillText(portuguese ? 'Resultado compartilhado · Pontuações não verificadas' : 'Shared result · Unverified scores', 65, 280, 1070);
   localizedAxes.forEach((axis, index) => {
     const y = 310 + index * 90;
     const score = result.scores[index];

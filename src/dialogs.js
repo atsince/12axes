@@ -9,11 +9,11 @@ export function dialogs(locale = 'en') {
     allow: 'Permitir análise',
     later: 'Decidir depois',
     clearTitle: 'Apagar seus dados locais?',
-    clearDescription: 'Isso remove as respostas salvas, o progresso do teste e o resultado mais recente deste navegador. Links compartilhados, arquivos baixados e cópias em outros aparelhos continuam disponíveis.',
+    clearDescription: 'Isso remove as respostas salvas, o progresso do teste e o resultado mais recente deste navegador, incluindo o resumo das respostas e os exemplos de respostas usados nas explicações. Links compartilhados, arquivos baixados e cópias em outros aparelhos continuam disponíveis.',
     keep: 'Manter meus dados',
     clear: 'Apagar dados locais',
     shareTitle: 'Seu link de resultado',
-    shareDescription: 'Copie este link manualmente. Qualquer pessoa com ele pode ver as doze pontuações. As respostas individuais não são incluídas. O link não pode ser revogado.',
+    shareDescription: 'Copie este link manualmente. Qualquer pessoa com ele pode ver as doze pontuações. O link não inclui respostas individuais, o resumo das respostas nem os exemplos usados nas explicações. O link não pode ser revogado.',
     resultUrl: 'URL do resultado',
     done: 'Concluir'
   } : {
@@ -25,11 +25,11 @@ export function dialogs(locale = 'en') {
     allow: 'Allow analytics',
     later: 'Decide later',
     clearTitle: 'Clear your local perspective?',
-    clearDescription: 'This removes saved answers, test progress, and your latest result from this browser. Shared links, downloaded files, and copies on other devices remain available.',
+    clearDescription: 'This removes saved answers, test progress, and your latest result from this browser, including the answer summary and the answer examples used in explanations. Shared links, downloaded files, and copies on other devices remain available.',
     keep: 'Keep my data',
     clear: 'Clear local data',
     shareTitle: 'Your result link',
-    shareDescription: 'Copy this link manually. Anyone with it can view all twelve scores. Individual answers are not included. The link cannot be revoked.',
+    shareDescription: 'Copy this link manually. Anyone with it can view all twelve scores. The link includes no individual answers, answer summary, or answer examples used in explanations. The link cannot be revoked.',
     resultUrl: 'Result URL',
     done: 'Done'
   };

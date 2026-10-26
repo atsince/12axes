@@ -1,6 +1,6 @@
 # 12 Axes
 
-英文政治价值观自测网站，黄色主视觉，原创 72 题，浏览器本地计分，无需登录、无广告，提供访客同意后启用的 Google Analytics 和 Microsoft Clarity。
+英语及巴西葡语政治价值观自测网站，黄色主视觉，原创 72 题，浏览器本地计分，无需登录、无广告，提供访客同意后启用的 Google Analytics 和 Microsoft Clarity。
 
 线上地址：https://12axespoliticaltest.online
 
@@ -20,11 +20,12 @@ npm run dev
 npm run build
 ```
 
-静态产物位于 `dist/`。首页、测试入口、12 轴介绍、计分方法、关于、隐私、条款和存储政策均生成独立 HTML，带 canonical、robots 和 sitemap。答题及结果需要 JavaScript。
+静态产物位于 `dist/`。首页、测试入口、12 轴介绍、计分方法、关于、隐私、条款和存储政策均生成独立 HTML，带统一尾斜杠的 canonical、robots、sitemap 和英葡双向 hreflang。英语保留原路径，巴西葡语使用 `/pt-br/`。答题与结果页面使用 noindex，不进入 sitemap；robots 允许抓取以读取 noindex。答题及结果需要 JavaScript。
 
 ## 功能
 
-- 36 题快速版 / 72 题完整版，每种均覆盖全部 12 轴。
+- 36 题快速版 / 72 题完整版，每种均覆盖全部 12 轴，首页首屏可直接开始。
+- 英语和巴西葡语覆盖页面、全部题目、作答、结果、弹窗与图片导出；语言切换复用本地进度，分享链接保留结果片段。
 - 五档回答、上一题、键盘作答、保存和恢复进度。
 - 雷达图、双向比例、逐轴说明、PNG 下载、打印/PDF、可选链接分享。
 - 答案和最近结果仅保存在浏览器 localStorage；页脚可清除。
@@ -34,6 +35,10 @@ npm run build
 ## 文件
 
 - `src/content.js`：原创维度、题库和题目方向。
+- `src/content-pt.js`：巴西葡语维度与72题翻译，沿用题目标识及计分方向。
+- `src/views-pt.js`：巴西葡语静态页面与SEO元信息。
+- `src/paths.js`：语言路由、标准URL与页面链接。
+- `src/dialogs.js`：英语及葡语的统计、清除与分享弹窗。
 - `src/scoring.js`：选题、计分与分享链接解析。
 - `src/app.js`：答题状态、路由、存储、分享和页面行为。
 - `src/views.js`：页面文案、静态内容和SEO元信息。
@@ -65,7 +70,7 @@ Cloudflare Pages 项目 `12axes-lashreel` 已连接 `atsince/12axes` 的 `main` 
 - Clarity 项目：`z24zihjej1`，后台：https://clarity.microsoft.com/projects/view/z24zihjej1/gettingstarted
 - 仅在 `12axespoliticaltest.online` 和 `www.12axespoliticaltest.online` 加载统计；本地和 Pages 预览域名不采集。
 - 访客选择 Allow analytics 后才加载脚本，页脚 Analytics preferences 可以撤回。选择保存在 `12axes.analytics-consent.v1`；清理答题数据不会改变统计选择。
-- GA4 手动记录页面浏览；切换题目和重复渲染不增加页面浏览数。GA 后台的增强型衡量已关闭，避免自动采集表单、出站链接和重复页面浏览。不要开启广告或 Google Signals。
+- GA4 手动记录页面浏览，以及 `quiz_start`、`quiz_complete`、`result_download`、`result_share` 四类事件；仅在同意后发送，业务参数限定测试模式和语言。完成事件只在实际完成问卷时发送，刷新或打开分享结果不计为完成；分享事件表示复制链接或打开手动复制面板，不表示链接已送达。切换题目和重复渲染不增加页面浏览数。GA 后台的增强型衡量已关闭，避免自动采集表单、出站链接和重复页面浏览。不要开启广告或 Google Signals。
 - Clarity 不加载于 `/test`、`/results`，也不在带查询参数或结果片段的初始页面加载。公共页面与答题/结果页面之间使用整页导航隔离录制脚本。
 - 不设置用户身份，不发送答案和得分；GA 页面地址只保留已知路由，去除查询参数和 fragment，外部来源只保留 origin。
 - 统计 ID 是公开客户端标识，配置随代码构建，不需要服务器密钥。

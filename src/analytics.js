@@ -1,4 +1,5 @@
 import { siteOrigin, routeMetadata } from './views.js';
+import { basePath, localeForPath, pagePath, routeKey } from './paths.js';
 
 const measurementId = 'G-7PPSG0RGJ2';
 const clarityProjectId = 'z24zihjej1';
@@ -8,13 +9,13 @@ let consent = null;
 let previousPage = '';
 
 export function isPrivatePage(path) {
-  return ['/test', '/results'].includes(path.replace(/\/$/, ''));
+  return ['/test', '/results'].includes(basePath(path));
 }
 
 function reportStorageError(error) {
   if (!['SecurityError', 'QuotaExceededError'].includes(error.name)) throw error;
   const message = document.getElementById('analytics-storage-error');
-  message.textContent = `Analytics preferences could not be saved (${error.name}). Analytics stays off until your choice can be saved.`;
+  message.textContent = localeForPath(location.pathname) === 'pt-BR' ? `Não foi possível salvar suas preferências de análise (${error.name}). A análise ficará desativada até que sua escolha possa ser salva.` : `Analytics preferences could not be saved (${error.name}). Analytics stays off until your choice can be saved.`;
   message.hidden = false;
 }
 
@@ -40,12 +41,12 @@ function startAnalytics() {
     allow_google_signals: false,
     allow_ad_personalization_signals: false,
     cookie_expires: 31536000,
-    page_location: `${siteOrigin}${location.pathname}`,
+    page_location: `${siteOrigin}${pagePath(Object.hasOwn(routeMetadata, routeKey(location.pathname)) ? location.pathname : '/404', localeForPath(location.pathname))}`,
     page_referrer: document.referrer ? new URL(document.referrer).origin : ''
   });
   loadAnalyticsScript(`https://www.googletagmanager.com/gtag/js?id=${measurementId}`);
-  trackPageView(location.pathname.replace(/\/$/, '') || '/');
-  if (!isPrivatePage(location.pathname) && Object.hasOwn(routeMetadata, location.pathname.replace(/\/$/, '') || '/') && !location.search && !location.hash.startsWith('#r=')) {
+  trackPageView(routeKey(location.pathname));
+  if (!isPrivatePage(location.pathname) && Object.hasOwn(routeMetadata, routeKey(location.pathname)) && !location.search && !location.hash.startsWith('#r=')) {
     window.clarity = function() { (window.clarity.q = window.clarity.q || []).push(arguments); };
     window.clarity('consentv2', { analytics_Storage: 'granted', ad_Storage: 'denied' });
     loadAnalyticsScript(`https://www.clarity.ms/tag/${clarityProjectId}`);
@@ -53,16 +54,24 @@ function startAnalytics() {
 }
 
 export function trackPageView(path) {
+  path = routeKey(path);
   if (consent !== 'granted' || !window.gtag || path === previousPage) return;
-  const pagePath = Object.hasOwn(routeMetadata, path) ? path : '/404';
-  const pageLocation = `${siteOrigin}${pagePath}`;
+  const pageRoute = Object.hasOwn(routeMetadata, path) ? path : '/404';
+  const pageLocation = `${siteOrigin}${pagePath(pageRoute, localeForPath(path))}`;
   window.gtag('set', { page_location: pageLocation, page_title: document.title });
   window.gtag('event', 'page_view', {
     page_location: pageLocation,
     page_title: document.title,
-    page_referrer: previousPage ? `${siteOrigin}${previousPage}` : document.referrer ? new URL(document.referrer).origin : ''
+    page_referrer: previousPage ? `${siteOrigin}${previousPage === '/' ? '/' : `${previousPage}/`}` : document.referrer ? new URL(document.referrer).origin : ''
   });
-  previousPage = pagePath;
+  previousPage = pageRoute;
+}
+
+export function trackConversion(name, mode) {
+  if (!['quiz_start', 'quiz_complete', 'result_download', 'result_share'].includes(name)) throw new Error(`Unsupported conversion event: ${name}`);
+  if (!['quick', 'full'].includes(mode)) throw new Error(`Unsupported conversion test mode: ${mode}`);
+  if (consent !== 'granted' || !window.gtag || !productionHosts.includes(location.hostname)) return;
+  window.gtag('event', name, { test_mode: mode, language: localeForPath(location.pathname), transport_type: 'beacon' });
 }
 
 function removeAnalyticsCookies() {

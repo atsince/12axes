@@ -17,7 +17,14 @@ createServer(async (request, response) => {
   if (filename !== root && !filename.startsWith(root + sep)) { response.writeHead(403); response.end('Forbidden path'); return; }
   let status = 200;
   try {
-    if ((await stat(filename)).isDirectory()) filename = resolve(filename, 'index.html');
+    if ((await stat(filename)).isDirectory()) {
+      if (!pathname.endsWith('/')) {
+        response.writeHead(308, { Location: `${pathname}/${new URL(request.url, 'http://localhost').search}` });
+        response.end();
+        return;
+      }
+      filename = resolve(filename, 'index.html');
+    }
     const contents = await readFile(filename);
     response.writeHead(status, { 'Content-Type': contentTypes[extname(filename)] || 'application/octet-stream', 'Cache-Control': 'no-cache' });
     response.end(contents);
